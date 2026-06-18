@@ -37,7 +37,8 @@ async function startCrawling() {
     for (let page = 1; page <= maxPages; page++) {
       console.log(`\n📄 [${page} / ${maxPages} 페이지] 웹사이트 직접 파싱 중...`);
       
-      const targetUrl = `https://www.futurepedia.io/ai-tools/personal-assistant?verified=true&sort=popular&page=${page}`;
+      const ai_subject = 'prompt-Design Generators'
+      const targetUrl = `https://www.futurepedia.io/ai-tools/${ai_subject}?verified=true&sort=popular&page=${page}`;
       const response = await axios.get(targetUrl, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
