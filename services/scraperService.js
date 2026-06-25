@@ -212,7 +212,7 @@ async function transformWithLLM(rawTool) {
     const model = genAI.models;
 
     const response = await model.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.5-flash-lite',
       contents: TRANSFORM_PROMPT_TEMPLATE(rawTool),
       config: {
         temperature: 0.2,     // 낮은 temperature → 일관된 JSON 출력

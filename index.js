@@ -11,7 +11,12 @@ import { initScheduler } from './services/batchScheduler.js';
 import { runScraperPipeline } from './services/scraperService.js';
 
 const app = express();
-app.use(express.json());
+
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.ALLOWED_ORIGIN  // .env에 Vercel URL 넣기
+    : '*',
+}));
 
 // ── 기존 라우터 연결 (기존 구조 유지) ───────────────────────────
 // import toolsRouter from './routes/tools.js';
