@@ -9,6 +9,7 @@ import 'dotenv/config';
 import express from 'express';
 import { initScheduler } from './services/batchScheduler.js';
 import { runScraperPipeline } from './services/scraperService.js';
+import cors from 'cors';
 
 const app = express();
 

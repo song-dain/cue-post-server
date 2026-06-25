@@ -1,22 +1,25 @@
-const express = require('express');
-const router = express.Router();
-const supabase = require('../config/supabase');
-const { generateProfessionalPrompt } = require('../services/geminiService');
+// routes/cardRoutes.js
+import express from 'express';
+import { createClient } from '@supabase/supabase-js';
+import { generateProfessionalPrompt } from '../services/geminiService.js';
 
+const router = express.Router();
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
+
+// 카드 목록 조회
 router.get('/', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
-    const category = req.query.category; 
-
+    const category = req.query.category;
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
-    let query = supabase
-      .from('cards')
-      .select('*', { count: 'exact' });
+    let query = supabase.from('cards').select('*', { count: 'exact' });
 
-    // 🎯 [수정] 카테고리 값이 존재하고, 그 값이 'all'이 아닐 때만 필터링을 겁니다!
     if (category && category !== 'all' && category !== '') {
       query = query.eq('category', category);
     }
@@ -31,15 +34,15 @@ router.get('/', async (req, res) => {
       cards: data || [],
       totalCount: count || 0,
       totalPages: Math.ceil((count || 0) / limit),
-      currentPage: page
+      currentPage: page,
     });
   } catch (err) {
-    console.error('Supabase 데이터 조회 에러: ', err.message);
+    console.error('Supabase 데이터 조회 에러:', err.message);
     res.status(500).json({ error: '서버 에러가 발생했습니다.' });
   }
 });
 
-// 2. 프롬프트 생성 API (기존 코드 유지)
+// 프롬프트 생성
 router.post('/:id/prompt', async (req, res) => {
   const { id } = req.params;
   try {
@@ -66,12 +69,12 @@ router.post('/:id/prompt', async (req, res) => {
 
     return res.json(resultJson);
   } catch (error) {
-    console.error('❌ 프롬프트 생성 에러:', error.message);
+    console.error('프롬프트 생성 에러:', error.message);
     return res.json({
-      prompt_ko: "당신은 해당 분야의 전문 어시스턴트입니다.",
-      prompt_en: "You are an expert assistant in this field."
+      prompt_ko: '당신은 해당 분야의 전문 어시스턴트입니다.',
+      prompt_en: 'You are an expert assistant in this field.',
     });
   }
 });
 
-module.exports = router;
+export default router;
